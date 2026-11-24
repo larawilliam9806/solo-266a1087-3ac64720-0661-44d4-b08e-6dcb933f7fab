@@ -167,6 +167,15 @@ VERDICT_LABELS = {
 }
 
 
+def verdict_for(min_possible: int, max_possible: int, limit: int) -> str:
+    """Verdict from a saved interval under the limit given now."""
+    if min_possible > limit:
+        return MUST_EXCEED
+    if max_possible <= limit:
+        return MUST_NOT_EXCEED
+    return NEEDS_DETAIL
+
+
 @dataclass(frozen=True)
 class BatchBounds:
     total_points: int
@@ -178,11 +187,7 @@ class BatchBounds:
     per_coil: tuple[dict, ...] = field(default_factory=tuple)
 
     def verdict(self, limit: int) -> str:
-        if self.min_possible > limit:
-            return MUST_EXCEED
-        if self.max_possible <= limit:
-            return MUST_NOT_EXCEED
-        return NEEDS_DETAIL
+        return verdict_for(self.min_possible, self.max_possible, limit)
 
 
 def batch_bounds(coils: Iterable[CoilSnapshot]) -> BatchBounds:

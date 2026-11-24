@@ -6,12 +6,25 @@
 
 <div class="card">
   <div class="verdict {{ det.row.verdict }}">{{ det.label }}</div>
+  {% if det.reused %}
+  <div class="reuse-banner">
+    <span class="tag reuse">复用区间</span>
+    本次各卷的依据与上次成功判定 #{{ det.reused_from }} 相同，整批 P95 区间直接沿用，
+    未重新读取逐点读数；判定仍按本次厚度上限得出。
+  </div>
+  {% else %}
+  <div class="reuse-banner fresh">
+    <span class="tag">本次实算</span>
+    本次按当前档案重新核算整批 P95 区间。
+  </div>
+  {% endif %}
   <div class="statline">
     <div><span>厚度上限</span><strong>{{ limit }} μm</strong></div>
     <div><span>整批测点数</span><strong>{{ det.row.total_points }}</strong></div>
     <div><span>P95 位次</span><strong>第 {{ det.row.p95_index }} 个</strong></div>
     <div><span>整批 P95 最小可能</span><strong>{{ det.row.min_possible }} μm</strong></div>
     <div><span>整批 P95 最大可能</span><strong>{{ det.row.max_possible }} μm</strong></div>
+    <div><span>本次判定档案</span><strong>#{{ det.row.id }}</strong></div>
   </div>
   <p class="hint">
     {% if det.row.verdict == 'must_exceed' %}

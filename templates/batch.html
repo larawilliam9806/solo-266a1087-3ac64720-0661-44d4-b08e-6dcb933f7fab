@@ -24,7 +24,8 @@
   <div class="hint">
     整批共 N 个测点，P95 是升序第 ⌈N×0.95⌉ 个读数。系统算出该读数可能达到的最小值
     与最大值：最小值已超上限 → 必超限；最大值不超过上限 → 必不超限；否则 → 待补明细。
-    摘要卷按摘要做闭式计数，不展开为逐点读数。
+    摘要卷按摘要做闭式计数，不展开为逐点读数；与上次成功判定依据完全相同时直接复用
+    其区间，不再逐点核算。
   </div>
 </div>
 
@@ -164,7 +165,7 @@
   <table>
     <thead>
       <tr><th>时间</th><th>上限</th><th>整批测点</th><th>P95 最小值</th>
-          <th>P95 最大值</th><th>判定</th><th></th></tr>
+          <th>P95 最大值</th><th>判定</th><th>档案编号</th><th></th></tr>
     </thead>
     <tbody>
       {% for h in history %}
@@ -175,6 +176,10 @@
         <td class="mono">{{ h.row.min_possible }} μm</td>
         <td class="mono">{{ h.row.max_possible }} μm</td>
         <td>{{ h.label }}</td>
+        <td class="mono">
+          #{{ h.row.id }}
+          {% if h.reused %}<span class="tag reuse">复用 #{{ h.reused_from }}</span>{% endif %}
+        </td>
         <td>
           <a href="{{ url_for('determination_detail', batch_id=batch.id, det_id=h.row.id) }}">查看</a>
         </td>
